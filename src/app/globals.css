@@ -1,0 +1,191 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+  --pitch-bg: #080808;
+  --pitch-card: #111111;
+  --pitch-warm-card: #161410;
+  --pitch-accent: #e04020;
+  --pitch-accent-dim: #8b2010;
+  --pitch-text: #f0ede6;
+  --pitch-muted: #666666;
+  --pitch-border: rgba(255, 255, 255, 0.1);
+}
+
+@theme inline {
+  --color-background: var(--pitch-bg);
+  --color-foreground: var(--pitch-text);
+  --font-mono: var(--font-mono);
+}
+
+html,
+body {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top right, rgba(224, 64, 32, 0.14), transparent 34%),
+    linear-gradient(180deg, rgba(224, 64, 32, 0.04), transparent 18%),
+    var(--pitch-bg);
+  color: var(--pitch-text);
+}
+
+body {
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  border-color: var(--pitch-border);
+}
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+button:disabled,
+input:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+}
+
+::selection {
+  background: rgba(224, 64, 32, 0.4);
+  color: var(--pitch-text);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0d0d0d;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #383838;
+}
+
+.animate-blink {
+  animation: blink 1s step-end infinite;
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2.8s ease-in-out infinite;
+}
+
+.shimmer-button::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.22) 40%,
+    transparent 60%
+  );
+  transform: translateX(-140%);
+  transition: transform 0.65s ease;
+}
+
+.shimmer-button:hover::before {
+  transform: translateX(140%);
+}
+
+.ticker-mask {
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  );
+}
+
+.markdown-stream p,
+.markdown-stream ul,
+.markdown-stream ol {
+  margin: 0;
+}
+
+.markdown-stream ul,
+.markdown-stream ol {
+  padding-left: 1.1rem;
+}
+
+.markdown-brief p,
+.markdown-brief ul {
+  margin: 0;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-8px);
+  }
+  40%,
+  80% {
+    transform: translateX(8px);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes pulseGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(224, 64, 32, 0.06);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(224, 64, 32, 0.22);
+  }
+}
