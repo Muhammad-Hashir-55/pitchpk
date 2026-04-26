@@ -12,7 +12,7 @@ interface ModelOptions {
   responseMimeType?: string;
 }
 
-const DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview";
+const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
 const GEMINI_MODEL_FALLBACKS = [
   DEFAULT_GEMINI_MODEL,
   "gemini-2.5-flash",
