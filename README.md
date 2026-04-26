@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 PitchPK
 
-## Getting Started
+> **Brutal investor questions first. Useful clarity second.**
 
-First, run the development server:
+PitchPK is an AI-powered platform designed to stress-test your startup ideas before you ever step into a real boardroom. It simulates a panel of ruthless, highly-critical investors to expose the flaws in your business model, while also providing real-time market intelligence and actionable mentorship.
 
+---
+
+## 🛑 The Problem
+Startup founders often build in an echo chamber. They spend months (and thousands of dollars) developing a product without properly validating the market, identifying true competitors, or understanding what investors actually care about. When they finally pitch, they get dismantled by questions they should have anticipated on day one.
+
+## 💡 The Solution
+PitchPK gives you that brutal reality check instantly. You submit your startup idea, and our AI panel rips it apart, simulating the toughest investor Q&A. 
+Beyond the "roast", PitchPK provides:
+- **Live Market Intelligence:** Scrapes real web results to find actual competitors and validate market availability.
+- **Investor Matching:** Suggests real-world investor archetypes and funding stages that fit your idea.
+- **Constructive Mentorship:** After the roast, the panel switches to "mentor mode" to help you fix the holes they just punched in your pitch.
+- **Exportable Briefs:** Generates a clean, downloadable scorecard of your startup's viability.
+
+---
+
+## 🛠️ Tech Stack
+
+PitchPK is built with modern, efficient web technologies to ensure a fast, responsive, and reliable experience:
+
+### Frontend
+- **Framework:** [Next.js](https://nextjs.org/) (App Router)
+- **UI Library:** [React 18](https://reactjs.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/) (with custom glassmorphism & dynamic animations)
+- **Icons:** React Icons
+
+### Backend & APIs
+- **Architecture:** Next.js Serverless API Routes
+- **AI / LLM:** Google Gemini API (Using the cutting-edge `Gemini 3.1 Pro` model) via the `@google/generative-ai` SDK.
+- **Live Search:** Custom, zero-cost DuckDuckGo HTML scraper for real-time market data grounding.
+
+### Architecture Highlights
+- **Single-Call Intelligence API:** We combine Market Search, Investor Matching, and Resource Gathering into a single, highly-optimized `/api/intelligence` call to minimize rate-limiting and maximize speed.
+- **Retry & Backoff Logic:** Built-in exponential backoff for AI rate limits ensures the app remains stable even under heavy free-tier API usage.
+- **Streaming Responses:** Real-time character-by-character streaming for the roasting and mentoring sessions to simulate an actual conversation.
+
+---
+
+## 🚀 How to Run Locally
+
+Follow these simple steps to get PitchPK running on your local machine.
+
+### 1. Prerequisites
+- [Node.js](https://nodejs.org/en/) (v18 or higher recommended)
+- A [Google Gemini API Key](https://aistudio.google.com/app/apikey) (Free tier works perfectly!)
+
+### 2. Clone the Repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/pitchpk.git
+cd pitchpk
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Install Dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Configure Environment Variables
+Create a file named `.env.local` in the root directory of the project and add your Gemini API key:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+GEMINI_API_KEY_PITCHPK="your_gemini_api_key_here"
 
-## Learn More
+# Optional: Override the default model
+# GEMINI_MODEL_PITCHPK="gemini-3.1-pro-preview"
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 5. Start the Development Server
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 6. Open the App
+Navigate to [http://localhost:3000](http://localhost:3000) in your browser. Enter your startup idea and face the panel!
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📂 Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `/src/app` - Next.js App Router pages (Landing, Pitch, API Routes)
+- `/src/components` - Reusable UI components (`IdeaForm`, `IdeaSuggestions`, `RoastSession`, etc.)
+- `/src/lib` - Core utilities (`gemini.ts` for AI, `duckduckgo.ts` for live search, etc.)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Built to make founders sweat now, so they can succeed later.*
