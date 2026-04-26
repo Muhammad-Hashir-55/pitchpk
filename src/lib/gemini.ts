@@ -1,6 +1,5 @@
 import {
   GoogleGenerativeAI,
-  type GenerativeModel,
 } from "@google/generative-ai";
 
 import { getPersonaById } from "@/lib/personas";
@@ -10,15 +9,17 @@ interface ModelOptions {
   systemInstruction?: string;
   temperature?: number;
   maxOutputTokens?: number;
+  responseMimeType?: string;
 }
 
-const DEFAULT_GEMINI_MODEL = "gemini-3.0-flash";
+const DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview";
 const GEMINI_MODEL_FALLBACKS = [
   DEFAULT_GEMINI_MODEL,
   "gemini-2.5-flash",
   "gemini-2.0-flash",
 ] as const;
 const DEFAULT_MAX_OUTPUT_TOKENS = 1000;
+const MAX_RETRIES = 2;
 
 function getClient() {
   const apiKey =
@@ -31,17 +32,6 @@ function getClient() {
   }
 
   return new GoogleGenerativeAI(apiKey);
-}
-
-export function getGeminiModel(options?: ModelOptions): GenerativeModel {
-  return getClient().getGenerativeModel({
-    model: getPreferredGeminiModels()[0] ?? DEFAULT_GEMINI_MODEL,
-    systemInstruction: options?.systemInstruction,
-    generationConfig: {
-      temperature: options?.temperature ?? 0.9,
-      maxOutputTokens: options?.maxOutputTokens ?? DEFAULT_MAX_OUTPUT_TOKENS,
-    },
-  });
 }
 
 function getPreferredGeminiModels() {
@@ -71,6 +61,39 @@ function isUnsupportedModelError(error: unknown) {
   );
 }
 
+function isRateLimitError(error: unknown) {
+  const status =
+    typeof error === "object" && error !== null && "status" in error
+      ? Number((error as { status?: unknown }).status)
+      : undefined;
+  const message = error instanceof Error ? error.message : String(error);
+
+  return (
+    status === 429 ||
+    message.includes("429") ||
+    message.includes("RESOURCE_EXHAUSTED") ||
+    message.includes("quota")
+  );
+}
+
+function extractRetryDelay(error: unknown): number {
+  const message = error instanceof Error ? error.message : String(error);
+  const match = message.match(/retry\s+in\s+([\d.]+)/i);
+
+  if (match) {
+    const seconds = parseFloat(match[1]);
+    if (!isNaN(seconds) && seconds > 0 && seconds <= 120) {
+      return Math.ceil(seconds * 1000);
+    }
+  }
+
+  return 10_000;
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function createModel(modelName: string, options?: ModelOptions) {
   return getClient().getGenerativeModel({
     model: modelName,
@@ -78,6 +101,7 @@ function createModel(modelName: string, options?: ModelOptions) {
     generationConfig: {
       temperature: options?.temperature ?? 0.9,
       maxOutputTokens: options?.maxOutputTokens ?? DEFAULT_MAX_OUTPUT_TOKENS,
+      responseMimeType: options?.responseMimeType,
     },
   });
 }
@@ -89,12 +113,33 @@ export async function generateGeminiContent(
   let lastError: unknown;
 
   for (const modelName of getPreferredGeminiModels()) {
-    try {
-      return await createModel(modelName, options).generateContent(prompt);
-    } catch (error) {
-      lastError = error;
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        const result = await createModel(modelName, options).generateContent(prompt);
+        return result;
+      } catch (error) {
+        lastError = error;
 
-      if (!isUnsupportedModelError(error)) {
+        if (isUnsupportedModelError(error)) {
+          console.error(
+            `[PitchPK] Model "${modelName}" not found, trying next model...`,
+          );
+          break;
+        }
+
+        if (isRateLimitError(error) && attempt < MAX_RETRIES) {
+          const delay = extractRetryDelay(error);
+          console.warn(
+            `[PitchPK] Rate limited on "${modelName}" (attempt ${attempt + 1}/${MAX_RETRIES + 1}). Retrying in ${Math.round(delay / 1000)}s...`,
+          );
+          await sleep(delay);
+          continue;
+        }
+
+        console.error(
+          `[PitchPK] Gemini error on "${modelName}" (attempt ${attempt + 1}):`,
+          error instanceof Error ? error.message : error,
+        );
         throw error;
       }
     }

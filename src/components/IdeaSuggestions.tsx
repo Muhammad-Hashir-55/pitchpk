@@ -15,6 +15,11 @@ interface SearchResult {
       note: string;
     }>;
   };
+  webResults?: Array<{
+    title: string;
+    url: string;
+    snippet: string;
+  }>;
 }
 
 interface Investor {
@@ -185,6 +190,31 @@ export function IdeaSuggestions({ idea, isLoading }: IdeaSuggestionsProps) {
                       <p key={i} className="text-sm text-[#1f2933]/85">
                         • <span className="font-semibold">{item.name}</span>: {item.note}
                       </p>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {searchResults.webResults && searchResults.webResults.length > 0 && (
+                <div>
+                  <p className="text-[11px] tracking-[0.12em] text-[#6f7b89] mb-1">
+                    🔍 Live Web Results
+                  </p>
+                  <div className="space-y-2">
+                    {searchResults.webResults.map((item, i) => (
+                      <div key={i} className="rounded-lg border border-[#2f6e78]/10 bg-white/80 p-2">
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-sm font-semibold text-[#2f6e78] underline underline-offset-2 hover:text-[#1a4a52]"
+                        >
+                          {item.title}
+                        </a>
+                        <p className="mt-0.5 text-[12px] leading-4 text-[#5b6774]">
+                          {item.snippet}
+                        </p>
+                      </div>
                     ))}
                   </div>
                 </div>

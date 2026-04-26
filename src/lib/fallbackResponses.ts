@@ -53,14 +53,21 @@ export function shouldUseGeminiFallback(error: unknown) {
       : undefined;
   const message = error instanceof Error ? error.message : String(error);
 
-  return (
+  const isFallback =
     message.includes("GoogleGenerativeAI") ||
     message.includes("fetch failed") ||
     status === 404 ||
     status === 429 ||
     status === 500 ||
-    status === 503
-  );
+    status === 503;
+
+  if (isFallback) {
+    console.error(
+      `[PitchPK] Gemini failed (status=${status ?? "N/A"}), using fallback. Reason: ${message.slice(0, 200)}`,
+    );
+  }
+
+  return isFallback;
 }
 
 export function streamTextResponse(text: string) {

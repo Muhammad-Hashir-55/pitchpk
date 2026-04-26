@@ -44,6 +44,7 @@ export async function POST(request: Request) {
 
     return Response.json({ brief });
   } catch (error) {
+    console.error("[PitchPK] Brief API error:", error instanceof Error ? error.message : error);
     if (shouldUseGeminiFallback(error)) {
       return Response.json({
         brief: buildBriefFallback(

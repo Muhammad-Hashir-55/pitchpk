@@ -55,6 +55,7 @@ export async function POST(request: Request) {
     );
     return streamTextResponse(result.response.text().trim());
   } catch (error) {
+    console.error("[PitchPK] Mentor API error:", error instanceof Error ? error.message : error);
     if (shouldUseGeminiFallback(error)) {
       return streamTextResponse(
         buildMentorFallback(
