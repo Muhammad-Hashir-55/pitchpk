@@ -26,16 +26,15 @@ export function parseBriefSections(briefText: string) {
       continue;
     }
 
+    const cleanLineForMatch = line.toUpperCase().replace(/^[#*\s]+/, "");
     const matchedSection = SECTION_ORDER.find((section) =>
-      line.toUpperCase().startsWith(section),
+      cleanLineForMatch.startsWith(section),
     );
 
     if (matchedSection) {
       currentSection = matchedSection;
-      sections[matchedSection] = line
-        .slice(matchedSection.length)
-        .replace(/^[:\-]\s*/, "")
-        .trim();
+      const regex = new RegExp(`^[#*\\s]*${matchedSection}[:*\\s-]*`, "i");
+      sections[matchedSection] = line.replace(regex, "").trim();
       continue;
     }
 
