@@ -1,20 +1,22 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: dark;
-  --pitch-bg: #080808;
-  --pitch-card: #111111;
-  --pitch-warm-card: #161410;
-  --pitch-accent: #e04020;
-  --pitch-accent-dim: #8b2010;
-  --pitch-text: #f0ede6;
-  --pitch-muted: #666666;
-  --pitch-border: rgba(255, 255, 255, 0.1);
+  color-scheme: light;
+  --pitch-bg: #f2f1ee;
+  --pitch-surface: #fcfaf6;
+  --pitch-surface-alt: #f4f0e9;
+  --pitch-accent: #2f6e78;
+  --pitch-accent-strong: #24565e;
+  --pitch-secondary: #9b7456;
+  --pitch-text: #1f2933;
+  --pitch-muted: #5b6774;
+  --pitch-border: rgba(41, 53, 68, 0.14);
 }
 
 @theme inline {
   --color-background: var(--pitch-bg);
   --color-foreground: var(--pitch-text);
+  --font-sans: var(--font-body);
   --font-mono: var(--font-mono);
 }
 
@@ -22,21 +24,35 @@ html,
 body {
   min-height: 100%;
   background:
-    radial-gradient(circle at top right, rgba(224, 64, 32, 0.14), transparent 34%),
-    linear-gradient(180deg, rgba(224, 64, 32, 0.04), transparent 18%),
+    radial-gradient(circle at 8% 8%, rgba(47, 110, 120, 0.16), transparent 34%),
+    radial-gradient(circle at 88% 16%, rgba(155, 116, 86, 0.14), transparent 36%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.75), transparent 46%),
     var(--pitch-bg);
   color: var(--pitch-text);
 }
 
 body {
-  font-family:
-    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+  font-family: var(--font-body), "Segoe UI", sans-serif;
   text-rendering: optimizeLegibility;
 }
 
 * {
   border-color: var(--pitch-border);
+}
+
+main {
+  position: relative;
+}
+
+main::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(37, 23, 17, 0.06) 1px, transparent 1px);
+  background-size: 22px 22px;
+  opacity: 0.35;
+  z-index: 0;
 }
 
 button,
@@ -51,25 +67,60 @@ textarea:disabled {
 }
 
 ::selection {
-  background: rgba(224, 64, 32, 0.4);
-  color: var(--pitch-text);
+  background: rgba(47, 110, 120, 0.24);
+  color: #101923;
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 11px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0d0d0d;
+  background: #ebe7df;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #262626;
+  background: #c0c7cf;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #383838;
+  background: #a9b2bc;
+}
+
+.surface-card {
+  background: color-mix(in srgb, var(--pitch-surface) 88%, white 12%);
+  border: 1px solid var(--pitch-border);
+  box-shadow:
+    0 20px 40px rgba(31, 41, 51, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.52);
+}
+
+.surface-card-alt {
+  background: color-mix(in srgb, var(--pitch-surface-alt) 88%, white 12%);
+  border: 1px solid var(--pitch-border);
+}
+
+.primary-btn {
+  border: 1px solid color-mix(in srgb, var(--pitch-accent) 68%, #133238 32%);
+  background: linear-gradient(135deg, #3b8490 0%, #2f6e78 100%);
+  color: #f5fbff;
+  box-shadow: 0 14px 26px rgba(47, 110, 120, 0.25);
+}
+
+.primary-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 20px 34px rgba(47, 110, 120, 0.3);
+}
+
+.ghost-btn {
+  border: 1px solid color-mix(in srgb, var(--pitch-accent) 36%, #ffffff 64%);
+  background: color-mix(in srgb, #ffffff 70%, var(--pitch-accent) 30%);
+  color: color-mix(in srgb, var(--pitch-accent) 84%, #17212b 16%);
+}
+
+.ghost-btn:hover {
+  background: color-mix(in srgb, #ffffff 58%, var(--pitch-accent) 42%);
 }
 
 .animate-blink {
@@ -99,7 +150,7 @@ textarea:disabled {
   background: linear-gradient(
     115deg,
     transparent 20%,
-    rgba(255, 255, 255, 0.22) 40%,
+    rgba(255, 255, 255, 0.32) 40%,
     transparent 60%
   );
   transform: translateX(-140%);
@@ -183,9 +234,9 @@ textarea:disabled {
 @keyframes pulseGlow {
   0%,
   100% {
-    box-shadow: 0 0 0 rgba(224, 64, 32, 0.06);
+    box-shadow: 0 0 0 rgba(47, 110, 120, 0.08);
   }
   50% {
-    box-shadow: 0 0 28px rgba(224, 64, 32, 0.22);
+    box-shadow: 0 0 30px rgba(47, 110, 120, 0.2);
   }
 }

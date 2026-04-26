@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { DM_Mono, Syne } from "next/font/google";
+import { DM_Mono, Plus_Jakarta_Sans, Source_Serif_4 } from "next/font/google";
 
 import "./globals.css";
 
-const syne = Syne({
+const sourceSerif = Source_Serif_4({
   subsets: ["latin"],
-  weight: ["800"],
+  weight: ["600", "700"],
   variable: "--font-display",
 });
 
@@ -13,6 +13,12 @@ const dmMono = DM_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
   variable: "--font-mono",
+});
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-body",
 });
 
 export const metadata: Metadata = {
@@ -34,9 +40,9 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`dark h-full bg-[#080808] text-[#F0EDE6] antialiased ${syne.variable} ${dmMono.variable}`}
+      className={`h-full bg-[#f2f1ee] text-[#1f2933] antialiased ${sourceSerif.variable} ${dmMono.variable} ${plusJakartaSans.variable}`}
     >
-      <body className="min-h-full bg-[#080808] text-[#F0EDE6]">
+      <body className="min-h-full bg-[#f2f1ee] text-[#1f2933]">
         {children}
       </body>
     </html>

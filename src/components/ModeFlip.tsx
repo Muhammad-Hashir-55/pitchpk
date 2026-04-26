@@ -11,10 +11,10 @@ export function ModeFlip({ active }: ModeFlipProps) {
     <AnimatePresence>
       {active ? (
         <motion.div
-          initial={{ opacity: 0, backgroundColor: "#080808" }}
+          initial={{ opacity: 0, backgroundColor: "#1b2732" }}
           animate={{
             opacity: 1,
-            backgroundColor: ["#080808", "#E04020", "#1A0A00"],
+            backgroundColor: ["#1b2732", "#9b7456", "#2f6e78"],
           }}
           exit={{ opacity: 0 }}
           transition={{ duration: 2.5, times: [0, 0.45, 1], ease: "easeInOut" }}
@@ -24,7 +24,7 @@ export function ModeFlip({ active }: ModeFlipProps) {
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: [0, 1, 1, 0], scale: [0.92, 1, 1, 0.98] }}
             transition={{ duration: 2.2, ease: "easeInOut" }}
-            className="max-w-4xl text-center text-4xl font-black uppercase tracking-[-0.05em] text-white md:text-7xl [font-family:var(--font-display)]"
+            className="max-w-4xl text-center text-4xl font-semibold tracking-[-0.03em] text-[#f4fbff] md:text-7xl [font-family:var(--font-display)]"
           >
             Enough roasting. Let&apos;s fix this.
           </motion.p>

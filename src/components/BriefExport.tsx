@@ -29,19 +29,19 @@ const briefSections = [
 function ScoreBadge({
   label,
   value,
-  tone = "text-white",
+  tone = "text-[#1f2933]",
 }: {
   label: string;
   value: string;
   tone?: string;
 }) {
   return (
-    <div className="rounded-[24px] border border-white/10 bg-[#111111]/85 p-4">
-      <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-white/45">
+    <div className="surface-card-alt rounded-[24px] p-4">
+      <p className="font-mono text-[11px] tracking-[0.18em] text-[#6f7b89]">
         {label}
       </p>
       <p
-        className={`mt-2 text-3xl font-black uppercase tracking-[-0.04em] [font-family:var(--font-display)] ${tone}`}
+        className={`mt-2 text-3xl font-semibold tracking-[-0.02em] [font-family:var(--font-display)] ${tone}`}
       >
         {value}
       </p>
@@ -52,30 +52,30 @@ function ScoreBadge({
 function ScoreOverview({ scorecard }: { scorecard: PitchScorecard }) {
   const readinessTone =
     scorecard.overall >= 75
-      ? "text-emerald-300"
+      ? "text-emerald-700"
       : scorecard.overall >= 60
-        ? "text-amber-300"
-        : "text-[#E04020]";
+        ? "text-amber-700"
+        : "text-[#b53e24]";
 
   return (
-    <div className="space-y-5 rounded-[32px] border border-white/10 bg-[#111111]/92 p-6 shadow-[0_0_50px_rgba(0,0,0,0.35)]">
+    <div className="surface-card space-y-5 rounded-[32px] p-6">
       <div className="grid gap-5 xl:grid-cols-[280px_minmax(0,1fr)]">
-        <div className="rounded-[28px] border border-[#E04020]/25 bg-[#130d0b] p-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.26em] text-[#E04020]">
+        <div className="rounded-[28px] border border-[#2f6e78]/20 bg-[#f4f9fa] p-5">
+          <p className="font-mono text-[11px] tracking-[0.2em] text-[#2f6e78]">
             Investor Readiness
           </p>
           <div className="mt-4 flex items-end gap-3">
             <span className="text-7xl font-black tracking-[-0.08em] [font-family:var(--font-display)]">
               {scorecard.overall}
             </span>
-            <span className="pb-2 font-mono text-sm uppercase tracking-[0.2em] text-white/45">
+            <span className="pb-2 font-mono text-sm tracking-[0.16em] text-[#6f7b89]">
               /100
             </span>
           </div>
-          <p className={`mt-3 text-lg font-bold uppercase ${readinessTone}`}>
+          <p className={`mt-3 text-lg font-semibold ${readinessTone}`}>
             {scorecard.readinessLabel}
           </p>
-          <p className="mt-3 text-sm leading-7 text-white/68">
+          <p className="mt-3 text-sm leading-7 text-[#5b6774]">
             {scorecard.verdict}
           </p>
         </div>
@@ -87,8 +87,8 @@ function ScoreOverview({ scorecard }: { scorecard: PitchScorecard }) {
               value={`${scorecard.survivalRate}%`}
               tone={
                 scorecard.survivalRate >= 65
-                  ? "text-emerald-300"
-                  : "text-[#E04020]"
+                  ? "text-emerald-700"
+                  : "text-[#b53e24]"
               }
             />
             <ScoreBadge
@@ -96,8 +96,8 @@ function ScoreOverview({ scorecard }: { scorecard: PitchScorecard }) {
               value={`${scorecard.roastTemperature}%`}
               tone={
                 scorecard.roastTemperature >= 75
-                  ? "text-[#E04020]"
-                  : "text-amber-300"
+                  ? "text-[#b53e24]"
+                  : "text-amber-700"
               }
             />
             <ScoreBadge
@@ -105,8 +105,8 @@ function ScoreOverview({ scorecard }: { scorecard: PitchScorecard }) {
               value={`${scorecard.questionsDodged}`}
               tone={
                 scorecard.questionsDodged === 0
-                  ? "text-emerald-300"
-                  : "text-white"
+                  ? "text-emerald-700"
+                  : "text-[#2d1b14]"
               }
             />
             <ScoreBadge
@@ -114,26 +114,26 @@ function ScoreOverview({ scorecard }: { scorecard: PitchScorecard }) {
               value={`${scorecard.evidenceScore}%`}
               tone={
                 scorecard.evidenceScore >= 60
-                  ? "text-emerald-300"
-                  : "text-white"
+                  ? "text-emerald-700"
+                  : "text-[#2d1b14]"
               }
             />
           </div>
 
           <div className="grid gap-4 xl:grid-cols-2">
-            <div className="rounded-[24px] border border-white/10 bg-black/25 p-4">
-              <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-white/45">
+            <div className="surface-card-alt rounded-[24px] p-4">
+              <p className="font-mono text-[11px] tracking-[0.18em] text-[#6f7b89]">
                 Strongest Signal
               </p>
-              <p className="mt-2 text-sm leading-7 text-white/80">
+              <p className="mt-2 text-sm leading-7 text-[#1f2933]/85">
                 {scorecard.strongestSignal}
               </p>
             </div>
-            <div className="rounded-[24px] border border-white/10 bg-black/25 p-4">
-              <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-white/45">
+            <div className="surface-card-alt rounded-[24px] p-4">
+              <p className="font-mono text-[11px] tracking-[0.18em] text-[#6f7b89]">
                 Biggest Risk
               </p>
-              <p className="mt-2 text-sm leading-7 text-white/80">
+              <p className="mt-2 text-sm leading-7 text-[#1f2933]/85">
                 {scorecard.biggestRisk}
               </p>
             </div>
@@ -142,28 +142,28 @@ function ScoreOverview({ scorecard }: { scorecard: PitchScorecard }) {
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
-        <div className="rounded-[24px] border border-white/10 bg-black/25 p-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-white/45">
+        <div className="surface-card-alt rounded-[24px] p-5">
+          <p className="font-mono text-[11px] tracking-[0.18em] text-[#6f7b89]">
             Score Breakdown
           </p>
           <div className="mt-4 space-y-4">
             {scorecard.dimensions.map((dimension) => (
               <div key={dimension.id} className="space-y-2">
                 <div className="flex items-center justify-between gap-4">
-                  <p className="text-sm font-semibold text-white/88">
+                  <p className="text-sm font-semibold text-[#2d1b14]/88">
                     {dimension.label}
                   </p>
-                  <p className="font-mono text-xs uppercase tracking-[0.18em] text-white/45">
+                  <p className="font-mono text-xs tracking-[0.14em] text-[#6f7b89]">
                     {dimension.score}/100
                   </p>
                 </div>
-                <div className="h-2.5 overflow-hidden rounded-full border border-white/10 bg-white/[0.05]">
+                <div className="h-2.5 overflow-hidden rounded-full border border-[#1f2933]/12 bg-[#e6eaef]">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-[#8B2010] via-[#E04020] to-[#f5b19e]"
+                    className="h-full rounded-full bg-gradient-to-r from-[#24565e] via-[#2f6e78] to-[#8bb2b8]"
                     style={{ width: `${dimension.score}%` }}
                   />
                 </div>
-                <p className="text-sm leading-6 text-white/58">
+                <p className="text-sm leading-6 text-[#5b6774]">
                   {dimension.summary}
                 </p>
               </div>
@@ -171,38 +171,38 @@ function ScoreOverview({ scorecard }: { scorecard: PitchScorecard }) {
           </div>
         </div>
 
-        <div className="rounded-[24px] border border-white/10 bg-black/25 p-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-white/45">
+        <div className="surface-card-alt rounded-[24px] p-5">
+          <p className="font-mono text-[11px] tracking-[0.18em] text-[#6f7b89]">
             Panel Pressure Map
           </p>
           <div className="mt-4 space-y-4">
             {scorecard.personaBreakdown.map((persona) => (
               <div
                 key={persona.personaId}
-                className="rounded-[20px] border border-white/10 bg-white/[0.02] p-4"
+                className="rounded-[20px] border border-[#1f2933]/12 bg-white/72 p-4"
               >
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-semibold text-white/88">
+                  <p className="text-sm font-semibold text-[#2d1b14]/88">
                     {persona.name}
                   </p>
                   <span
-                    className={`rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] ${
+                    className={`rounded-full px-2.5 py-1 font-mono text-[10px] tracking-[0.14em] ${
                       persona.defended
-                        ? "border border-emerald-500/25 bg-emerald-500/10 text-emerald-300"
-                        : "border border-[#E04020]/25 bg-[#E04020]/10 text-[#ffb19f]"
+                        ? "border border-emerald-700/25 bg-emerald-600/10 text-emerald-800"
+                        : "border border-[#c54b2d]/25 bg-[#c54b2d]/10 text-[#9f3218]"
                     }`}
                   >
                     {persona.defended ? "Addressed" : "Dodged"}
                   </span>
                 </div>
-                <p className="mt-2 text-sm leading-6 text-white/72">
+                <p className="mt-2 text-sm leading-6 text-[#1f2933]/78">
                   {persona.issue}
                 </p>
                 <div className="mt-3 flex items-center justify-between gap-4">
-                  <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/35">
+                  <p className="font-mono text-[11px] tracking-[0.14em] text-[#6f7b89]">
                     {persona.themes.join(" · ")}
                   </p>
-                  <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/45">
+                  <p className="font-mono text-[11px] tracking-[0.14em] text-[#6f7b89]">
                     Pressure {persona.severity}%
                   </p>
                 </div>
@@ -230,13 +230,13 @@ export function BriefExport({
   return (
     <section className="space-y-6">
       <div className="space-y-3">
-        <p className="font-mono text-xs uppercase tracking-[0.3em] text-[#E04020]">
+        <p className="font-mono text-xs tracking-[0.22em] text-[#2f6e78]">
           Endgame
         </p>
-        <h2 className="text-4xl font-black uppercase tracking-[-0.05em] [font-family:var(--font-display)]">
+        <h2 className="text-4xl font-semibold tracking-[-0.03em] text-[#1f2933] [font-family:var(--font-display)]">
           Investor brief
         </h2>
-        <p className="max-w-3xl text-base leading-7 text-white/65">
+        <p className="max-w-3xl text-base leading-7 text-[#5b6774]">
           You survived the panel. Package the signal into a clean one-pager and
           take the smarter version of your startup story into the next room.
         </p>
@@ -245,15 +245,15 @@ export function BriefExport({
       <ScoreOverview scorecard={scorecard} />
 
       {!briefText ? (
-        <div className="rounded-[32px] border border-white/10 bg-[#111111]/88 p-8 text-center">
-          <p className="mx-auto max-w-2xl text-base leading-7 text-white/65">
+        <div className="surface-card rounded-[32px] p-8 text-center">
+          <p className="mx-auto max-w-2xl text-base leading-7 text-[#5b6774]">
             Generate a structured investor brief from the full roast and mentor
             transcript. Then download it as a dark, one-page PDF.
           </p>
           <button
             onClick={onGenerate}
             disabled={isGenerating}
-            className="shimmer-button relative mt-6 inline-flex overflow-hidden rounded-full border border-[#E04020]/45 bg-[#E04020] px-7 py-4 text-sm font-bold uppercase tracking-[0.2em] text-[#080808] transition hover:-translate-y-0.5 disabled:opacity-60"
+            className="primary-btn shimmer-button relative mt-6 inline-flex overflow-hidden rounded-full px-7 py-4 text-sm font-semibold tracking-[0.14em] transition disabled:opacity-60"
           >
             <span className="relative z-10">
               {isGenerating
@@ -264,17 +264,17 @@ export function BriefExport({
         </div>
       ) : (
         <div className="space-y-5">
-          <div className="rounded-[32px] border border-white/10 bg-[#111111]/92 p-6 shadow-[0_0_50px_rgba(0,0,0,0.35)]">
-            <div className="flex flex-col gap-2 border-b border-white/10 pb-5 md:flex-row md:items-end md:justify-between">
+          <div className="surface-card rounded-[32px] p-6">
+            <div className="flex flex-col gap-2 border-b border-[#1f2933]/10 pb-5 md:flex-row md:items-end md:justify-between">
               <div>
-                <p className="font-mono text-xs uppercase tracking-[0.28em] text-[#E04020]">
+                <p className="font-mono text-xs tracking-[0.2em] text-[#2f6e78]">
                   PitchPK
                 </p>
-                <h3 className="text-3xl font-black uppercase tracking-[-0.05em] [font-family:var(--font-display)]">
+                <h3 className="text-3xl font-semibold tracking-[-0.02em] text-[#1f2933] [font-family:var(--font-display)]">
                   {sections["STARTUP NAME"] || "Investor Brief"}
                 </h3>
               </div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/35">
+              <p className="font-mono text-[11px] tracking-[0.14em] text-[#6f7b89]">
                 Dark PDF preview
               </p>
             </div>
@@ -282,10 +282,10 @@ export function BriefExport({
             <div className="mt-6 grid gap-6 md:grid-cols-2">
               {briefSections.map((section) => (
                 <div key={section} className="space-y-2">
-                  <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-[#E04020]">
+                  <p className="font-mono text-[11px] tracking-[0.18em] text-[#2f6e78]">
                     {section}
                   </p>
-                  <div className="markdown-brief text-sm leading-7 text-white/80">
+                  <div className="markdown-brief text-sm leading-7 text-[#1f2933]/85">
                     <ReactMarkdown>
                       {sections[section] || "Not enough data from the session."}
                     </ReactMarkdown>
@@ -299,7 +299,7 @@ export function BriefExport({
             <button
               onClick={onDownload}
               disabled={isDownloading}
-              className="shimmer-button relative inline-flex overflow-hidden rounded-full border border-[#E04020]/45 bg-[#E04020] px-7 py-4 text-sm font-bold uppercase tracking-[0.2em] text-[#080808] transition hover:-translate-y-0.5 disabled:opacity-60"
+              className="primary-btn shimmer-button relative inline-flex overflow-hidden rounded-full px-7 py-4 text-sm font-semibold tracking-[0.14em] transition disabled:opacity-60"
             >
               <span className="relative z-10">
                 {isDownloading
@@ -309,7 +309,7 @@ export function BriefExport({
             </button>
             <button
               onClick={onPitchAgain}
-              className="rounded-full border border-white/12 bg-white/[0.04] px-7 py-4 text-sm font-bold uppercase tracking-[0.2em] text-white/75 transition hover:border-white/20 hover:bg-white/[0.06]"
+              className="ghost-btn rounded-full px-7 py-4 text-sm font-semibold tracking-[0.14em] transition"
             >
               Pitch Again
             </button>

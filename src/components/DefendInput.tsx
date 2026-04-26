@@ -19,12 +19,12 @@ export function DefendInput({
   };
 
   return (
-    <div className="rounded-[28px] border border-[#E04020]/30 bg-[#110a08]/95 p-5 shadow-[0_-20px_50px_rgba(0,0,0,0.45)] backdrop-blur">
+    <div className="surface-card rounded-[28px] p-5 backdrop-blur">
       <div className="space-y-2">
-        <p className="font-mono text-xs uppercase tracking-[0.28em] text-[#E04020]">
+        <p className="font-mono text-xs tracking-[0.22em] text-[#2f6e78]">
           Defend Yourself
         </p>
-        <h2 className="text-2xl font-black uppercase tracking-[-0.04em] [font-family:var(--font-display)]">
+        <h2 className="text-2xl font-semibold tracking-[-0.02em] text-[#1f2933] [font-family:var(--font-display)]">
           The panel has spoken. Now defend your idea.
         </h2>
       </div>
@@ -39,12 +39,12 @@ export function DefendInput({
           onChange={(event) => onChange(event.target.value)}
           placeholder="Tell them why they're wrong."
           disabled={isBusy}
-          className="flex-1 rounded-full border border-white/10 bg-black/35 px-5 py-4 text-base text-[#F0EDE6] outline-none placeholder:text-white/25 focus:border-[#E04020]/45"
+          className="flex-1 rounded-full border border-[#1f2933]/15 bg-white/80 px-5 py-4 text-base text-[#1f2933] outline-none placeholder:text-[#8a95a3] focus:border-[#2f6e78]/45"
         />
         <button
           type="submit"
           disabled={isBusy}
-          className="shimmer-button relative inline-flex items-center justify-center overflow-hidden rounded-full border border-[#E04020]/45 bg-[#E04020] px-6 py-4 text-sm font-bold uppercase tracking-[0.22em] text-[#080808] transition hover:-translate-y-0.5 disabled:opacity-60"
+          className="primary-btn shimmer-button relative inline-flex items-center justify-center overflow-hidden rounded-full px-6 py-4 text-sm font-semibold tracking-[0.14em] transition disabled:opacity-60"
         >
           <span className="relative z-10">
             {isBusy ? "Holding your ground..." : "Fire Back →"}

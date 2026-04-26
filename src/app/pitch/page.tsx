@@ -322,7 +322,7 @@ export default function PitchPage() {
   const launchConfetti = () => {
     const duration = 2500;
     const end = Date.now() + duration;
-    const colors = ["#E04020", "#F0EDE6", "#C88020"];
+    const colors = ["#c54b2d", "#fff4e8", "#0f5b5a"];
 
     const frame = () => {
       confetti({
@@ -819,19 +819,19 @@ export default function PitchPage() {
       : "Round 1 / 2";
 
   return (
-    <main className="min-h-screen bg-[#080808] text-[#F0EDE6]">
+    <main className="min-h-screen text-[#1f2933]">
       <ModeFlip active={isModeFlipActive} />
 
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-8 md:px-10 lg:px-14">
-        <header className="flex flex-col gap-4 rounded-[26px] border border-white/10 bg-black/20 p-4 backdrop-blur md:flex-row md:items-center md:justify-between">
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-8 md:px-10 lg:px-14">
+        <header className="surface-card flex flex-col gap-4 rounded-[26px] p-4 backdrop-blur md:flex-row md:items-center md:justify-between">
           <div className="space-y-2">
             <Link
               href="/"
-              className="font-mono text-xs uppercase tracking-[0.3em] text-[#E04020]"
+              className="font-mono text-xs tracking-[0.22em] text-[#2f6e78]"
             >
               PitchPK
             </Link>
-            <p className="text-sm text-white/55">
+            <p className="text-sm text-[#5b6774]">
               Brutal investor questions first. Useful clarity second.
             </p>
           </div>
@@ -839,13 +839,13 @@ export default function PitchPage() {
           {session.mode !== "idle" ? (
             <button
               onClick={handleStartOver}
-              className="rounded-full border border-white/12 bg-white/[0.04] px-5 py-3 text-sm font-bold uppercase tracking-[0.18em] text-white/75 transition hover:border-white/20 hover:bg-white/[0.06]"
+              className="ghost-btn rounded-full px-5 py-3 text-sm font-semibold tracking-[0.14em] transition"
             >
               Start Over
             </button>
           ) : (
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/35">
-              Dark mode only. No mercy.
+            <p className="font-mono text-xs tracking-[0.16em] text-[#6f7b89]">
+              Brutal clarity. Better storytelling.
             </p>
           )}
         </header>

@@ -45,8 +45,8 @@ export function PersonaCard({
   const isDone = status === "done";
   const cardTone =
     mode === "roast"
-      ? `${persona.accentColor} bg-[#111111]`
-      : "border-white/20 bg-[#161410] text-[#F0EDE6]";
+      ? `${persona.accentColor} bg-[#fbf8f2]`
+      : "border-[#1f2933]/15 bg-[#f8f5ef] text-[#1f2933]";
 
   return (
     <article
@@ -65,9 +65,9 @@ export function PersonaCard({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.78 }}
             transition={{ duration: 0.3 }}
-            className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center bg-black/72 p-6 text-center"
+            className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center bg-[#1b2732]/86 p-6 text-center"
           >
-            <p className="text-3xl font-black uppercase tracking-[-0.05em] text-[#F0EDE6] md:text-4xl [font-family:var(--font-display)]">
+            <p className="text-3xl font-semibold tracking-[-0.02em] text-[#f4fbff] md:text-4xl [font-family:var(--font-display)]">
               {persona.catchphrase}
             </p>
           </motion.div>
@@ -82,39 +82,39 @@ export function PersonaCard({
             {persona.emoji}
           </div>
           <div className="space-y-1">
-            <p className="text-lg leading-none font-black uppercase tracking-[-0.03em] md:text-xl [font-family:var(--font-display)]">
+            <p className="text-xl leading-none font-semibold tracking-[-0.02em] md:text-2xl [font-family:var(--font-display)]">
               {persona.name}
             </p>
-            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/45">
+            <p className="font-mono text-[11px] tracking-[0.14em] text-[#6f7b89]">
               {persona.title}
             </p>
-            <p className="max-w-[22ch] text-sm leading-6 text-white/55">
+            <p className="max-w-[22ch] text-sm leading-6 text-[#5b6774]">
               {persona.catchphrase}
             </p>
           </div>
         </div>
-        <span className="rounded-full border border-white/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-white/45">
+        <span className="rounded-full border border-[#1f2933]/12 bg-white/65 px-2 py-1 font-mono text-[10px] tracking-[0.14em] text-[#6f7b89]">
           {mode === "roast" ? "Roast" : "Mentor"}
         </span>
       </div>
 
       <div className="mt-6 flex flex-1">
-        <div className="flex w-full flex-1 rounded-[22px] border border-white/8 bg-black/25 p-4">
+        <div className="flex w-full flex-1 rounded-[22px] border border-[#1f2933]/12 bg-white/70 p-4">
           {isThinking ? (
             <div className="flex h-full min-h-[150px] items-center justify-center">
               <TypingDots />
             </div>
           ) : message ? (
-            <div className="markdown-stream min-h-[170px] max-h-[230px] overflow-y-auto pr-1 text-sm leading-7 text-white/85 md:max-h-[250px] md:text-[15px]">
+            <div className="markdown-stream min-h-[170px] max-h-[230px] overflow-y-auto pr-1 text-sm leading-7 text-[#1f2933]/90 md:max-h-[250px] md:text-[15px]">
               <ReactMarkdown>{message}</ReactMarkdown>
               {isSpeaking ? (
-                <span className="ml-1 inline-block animate-blink text-[#E04020]">
+                <span className="ml-1 inline-block animate-blink text-[#2f6e78]">
                   |
                 </span>
               ) : null}
             </div>
           ) : (
-            <div className="flex min-h-[170px] items-center text-sm leading-7 text-white/28">
+            <div className="flex min-h-[170px] items-center text-sm leading-7 text-[#6f7b89]">
               Standing by for their turn.
             </div>
           )}
@@ -123,7 +123,7 @@ export function PersonaCard({
 
       {isDone ? (
         <div className="mt-4 flex justify-end">
-          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/35">
+          <span className="font-mono text-[11px] tracking-[0.16em] text-[#6f7b89]">
             ✓ Done
           </span>
         </div>
