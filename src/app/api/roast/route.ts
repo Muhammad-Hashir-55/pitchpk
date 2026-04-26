@@ -1,10 +1,10 @@
 import {
   buildRoastPrompt,
-  generateGeminiContent,
-} from "@/lib/gemini";
+  streamGroqContent,
+} from "@/lib/groq";
 import {
   buildRoastFallback,
-  shouldUseGeminiFallback,
+  shouldUseLLMFallback,
   streamTextResponse,
 } from "@/lib/fallbackResponses";
 import { getPersonaById } from "@/lib/personas";
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
       return Response.json({ error: "Unknown persona." }, { status: 404 });
     }
 
-    const result = await generateGeminiContent(
+    const result = await streamGroqContent(
       buildRoastPrompt(
         body.startupIdea,
         body.conversationHistory ?? [],
@@ -54,10 +54,10 @@ export async function POST(request: Request) {
         maxOutputTokens: 1500,
       },
     );
-    return streamTextResponse(result.response.text().trim());
+    return result;
   } catch (error) {
     console.error("[PitchPK] Roast API error:", error instanceof Error ? error.message : error);
-    if (shouldUseGeminiFallback(error)) {
+    if (shouldUseLLMFallback(error)) {
       return streamTextResponse(
         buildRoastFallback(
           body?.personaId ?? "skeptic",

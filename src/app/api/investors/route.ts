@@ -1,5 +1,5 @@
-import { generateGeminiContent } from "@/lib/gemini";
-import { shouldUseGeminiFallback } from "@/lib/fallbackResponses";
+import { generateGroqContent } from "@/lib/groq";
+import { shouldUseLLMFallback } from "@/lib/fallbackResponses";
 import { extractJsonFromResponse } from "@/lib/jsonExtract";
 import type { NextRequest } from "next/server";
 
@@ -142,12 +142,12 @@ Format as JSON (only JSON, no markdown):
   "investmentStage": "Seed/Series A/etc"
 }`;
 
-    const result = await generateGeminiContent(prompt, {
+    const result = await generateGroqContent(prompt, {
       temperature: 0.7,
       maxOutputTokens: 1000,
-      responseMimeType: "application/json",
+      responseFormat: { type: "json_object" },
     });
-    const text = result.response.text();
+    const text = result.text();
     
     const rawData = JSON.parse(extractJsonFromResponse(text)) as Partial<InvestorResult>;
 
@@ -169,7 +169,7 @@ Format as JSON (only JSON, no markdown):
   } catch (error) {
     console.error("[PitchPK] Investors API error:", error instanceof Error ? error.message : error);
 
-    if (shouldUseGeminiFallback(error)) {
+    if (shouldUseLLMFallback(error)) {
       try {
         const { startupIdea } = await request.clone().json() as { startupIdea: string };
         return Response.json(buildFallbackInvestors(startupIdea));

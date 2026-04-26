@@ -31,7 +31,7 @@ PitchPK is built with modern, efficient web technologies to ensure a fast, respo
 
 ### Backend & APIs
 - **Architecture:** Next.js Serverless API Routes
-- **AI / LLM:** Google Gemini API (Using the cutting-edge `Gemini 3.1 Pro` model) via the `@google/generative-ai` SDK.
+- **AI / LLM:** Groq API (Using the ultra-fast `llama-3.1-8b-instant` model) via the `groq-sdk`.
 - **Live Search:** Custom, zero-cost DuckDuckGo HTML scraper for real-time market data grounding.
 
 ### Architecture Highlights
@@ -47,7 +47,7 @@ Follow these simple steps to get PitchPK running on your local machine.
 
 ### 1. Prerequisites
 - [Node.js](https://nodejs.org/en/) (v18 or higher recommended)
-- A [Google Gemini API Key](https://aistudio.google.com/app/apikey) (Free tier works perfectly!)
+- A [Groq API Key](https://console.groq.com/keys) (Free tier works perfectly!)
 
 ### 2. Clone the Repository
 ```bash
@@ -61,13 +61,13 @@ npm install
 ```
 
 ### 4. Configure Environment Variables
-Create a file named `.env.local` in the root directory of the project and add your Gemini API key:
+Create a file named `.env.local` in the root directory of the project and add your Groq API key:
 
 ```env
-GEMINI_API_KEY_PITCHPK="your_gemini_api_key_here"
+GROQ_API_KEY="your_groq_api_key_here"
 
 # Optional: Override the default model
-# GEMINI_MODEL_PITCHPK="gemini-3.1-pro-preview"
+# GROQ_MODEL="llama-3.1-8b-instant"
 ```
 
 ### 5. Start the Development Server
@@ -84,7 +84,7 @@ Navigate to [http://localhost:3000](http://localhost:3000) in your browser. Ente
 
 - `/src/app` - Next.js App Router pages (Landing, Pitch, API Routes)
 - `/src/components` - Reusable UI components (`IdeaForm`, `IdeaSuggestions`, `RoastSession`, etc.)
-- `/src/lib` - Core utilities (`gemini.ts` for AI, `duckduckgo.ts` for live search, etc.)
+- `/src/lib` - Core utilities (`groq.ts` for AI, `duckduckgo.ts` for live search, etc.)
 
 ---
 *Built to make founders sweat now, so they can succeed later.*

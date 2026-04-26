@@ -1,6 +1,6 @@
-import { generateGeminiContent } from "@/lib/gemini";
+import { generateGroqContent } from "@/lib/groq";
 import { searchDuckDuckGo } from "@/lib/duckduckgo";
-import { shouldUseGeminiFallback } from "@/lib/fallbackResponses";
+import { shouldUseLLMFallback } from "@/lib/fallbackResponses";
 import { extractJsonFromResponse } from "@/lib/jsonExtract";
 import type { NextRequest } from "next/server";
 
@@ -92,13 +92,13 @@ Important Rules:
 - "websites.websites" must have exactly 5 items.
 - Provide highly specific, actionable content instead of generic advice.`;
 
-    const result = await generateGeminiContent(prompt, {
+    const result = await generateGroqContent(prompt, {
       temperature: 0.2, // Low temperature for more structured, factual outputs
       maxOutputTokens: 2500, // Enough for the large structured JSON
-      responseMimeType: "application/json",
+      responseFormat: { type: "json_object" },
     });
 
-    const text = result.response.text();
+    const text = result.text();
     let rawData: Partial<IntelligenceResult>;
 
     try {
@@ -138,7 +138,7 @@ Important Rules:
     console.error("[PitchPK] Intelligence API error:", error instanceof Error ? error.message : error);
 
     // Provide a comprehensive fallback using DuckDuckGo directly
-    if (shouldUseGeminiFallback(error)) {
+    if (shouldUseLLMFallback(error)) {
         try {
             const { startupIdea } = await request.clone().json() as { startupIdea: string };
             const searchQuery = startupIdea.trim().split(/\s+/).slice(0, 8).join(" ") + " startup";

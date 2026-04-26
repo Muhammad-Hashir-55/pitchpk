@@ -1,6 +1,6 @@
-import { generateGeminiContent } from "@/lib/gemini";
+import { generateGroqContent } from "@/lib/groq";
 import { searchDuckDuckGo } from "@/lib/duckduckgo";
-import { shouldUseGeminiFallback } from "@/lib/fallbackResponses";
+import { shouldUseLLMFallback } from "@/lib/fallbackResponses";
 import { extractJsonFromResponse } from "@/lib/jsonExtract";
 import type { NextRequest } from "next/server";
 
@@ -87,15 +87,13 @@ Analyze this idea and return a JSON object with:
 - "availability": { "status": "likely-existing"|"partially-served"|"whitespace-opportunity", "confidence": 0-100, "summary": "1-2 line explanation", "existingProducts": [{"name": "Company", "note": "Match level"}] }
 Use the provided web search results to find real companies.`;
 
-    const result = await generateGeminiContent(prompt, {
+    const result = await generateGroqContent(prompt, {
       temperature: 0.2,
       maxOutputTokens: 2000, // Increased
-      responseMimeType: "application/json",
+      responseFormat: { type: "json_object" },
     });
     
-    const candidate = result.response.candidates?.[0];
-    const finishReason = candidate?.finishReason;
-    const text = result.response.text();
+    const text = result.text();
     
 
     let rawData: Partial<SearchResult>;
@@ -158,7 +156,7 @@ Use the provided web search results to find real companies.`;
       // Total failure
     }
 
-    if (shouldUseGeminiFallback(error)) {
+    if (shouldUseLLMFallback(error)) {
       return Response.json(buildFallbackSearch("startup idea"));
     }
 

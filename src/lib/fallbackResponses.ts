@@ -46,7 +46,7 @@ function inferTargetMarket(startupIdea: string) {
   return "A narrowly defined early-adopter segment in Pakistan with a painful workflow and clear willingness to pay.";
 }
 
-export function shouldUseGeminiFallback(error: unknown) {
+export function shouldUseLLMFallback(error: unknown) {
   const status =
     typeof error === "object" && error !== null && "status" in error
       ? Number((error as { status?: unknown }).status)
@@ -54,7 +54,8 @@ export function shouldUseGeminiFallback(error: unknown) {
   const message = error instanceof Error ? error.message : String(error);
 
   const isFallback =
-    message.includes("GoogleGenerativeAI") ||
+    message.includes("Groq") ||
+    message.includes("groq") ||
     message.includes("fetch failed") ||
     status === 404 ||
     status === 429 ||
@@ -63,7 +64,7 @@ export function shouldUseGeminiFallback(error: unknown) {
 
   if (isFallback) {
     console.error(
-      `[PitchPK] Gemini failed (status=${status ?? "N/A"}), using fallback. Reason: ${message.slice(0, 200)}`,
+      `[PitchPK] LLM failed (status=${status ?? "N/A"}), using fallback. Reason: ${message.slice(0, 200)}`,
     );
   }
 

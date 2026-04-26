@@ -1,7 +1,4 @@
-import {
-  GoogleGenerativeAI,
-} from "@google/generative-ai";
-
+import { Groq } from 'groq-sdk';
 import { getPersonaById } from "@/lib/personas";
 import type { SerializableMessage } from "@/types";
 
@@ -9,56 +6,24 @@ interface ModelOptions {
   systemInstruction?: string;
   temperature?: number;
   maxOutputTokens?: number;
-  responseMimeType?: string;
+  responseFormat?: { type: "json_object" | "text" };
 }
 
-const DEFAULT_GEMINI_MODEL = "gemini-3.0-flash";
-const GEMINI_MODEL_FALLBACKS = [
-  DEFAULT_GEMINI_MODEL,
-  "gemini-2.5-flash",
-  "gemini-2.0-flash",
-] as const;
-const DEFAULT_MAX_OUTPUT_TOKENS = 1000;
+const DEFAULT_GROQ_MODEL = "llama-3.1-8b-instant";
 const MAX_RETRIES = 2;
 
 function getClient() {
-  const apiKey =
-    process.env.GEMINI_API_KEY_PITCHPK ?? process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
 
   if (!apiKey) {
-    throw new Error(
-      "Set GEMINI_API_KEY_PITCHPK or GEMINI_API_KEY in .env.local.",
-    );
+    throw new Error("Set GROQ_API_KEY in .env.local.");
   }
 
-  return new GoogleGenerativeAI(apiKey);
+  return new Groq({ apiKey });
 }
 
-function getPreferredGeminiModels() {
-  const envModel =
-    process.env.GEMINI_MODEL_PITCHPK?.trim() ?? process.env.GEMINI_MODEL?.trim();
-
-  return Array.from(
-    new Set(
-      [envModel, ...GEMINI_MODEL_FALLBACKS].filter(
-        (model): model is string => Boolean(model),
-      ),
-    ),
-  );
-}
-
-function isUnsupportedModelError(error: unknown) {
-  const status =
-    typeof error === "object" && error !== null && "status" in error
-      ? Number((error as { status?: unknown }).status)
-      : undefined;
-  const message = error instanceof Error ? error.message : String(error);
-
-  return (
-    status === 404 ||
-    message.includes("is not found for API version") ||
-    message.includes("is not supported for generateContent")
-  );
+function getPreferredGroqModel() {
+  return process.env.GROQ_MODEL?.trim() ?? DEFAULT_GROQ_MODEL;
 }
 
 function isRateLimitError(error: unknown) {
@@ -71,14 +36,14 @@ function isRateLimitError(error: unknown) {
   return (
     status === 429 ||
     message.includes("429") ||
-    message.includes("RESOURCE_EXHAUSTED") ||
-    message.includes("quota")
+    message.includes("rate_limit")
   );
 }
 
 function extractRetryDelay(error: unknown): number {
+  // Try to find a delay from the error message, otherwise default to 10 seconds
   const message = error instanceof Error ? error.message : String(error);
-  const match = message.match(/retry\s+in\s+([\d.]+)/i);
+  const match = message.match(/retry\s+after\s+([\d.]+)/i);
 
   if (match) {
     const seconds = parseFloat(match[1]);
@@ -94,58 +59,94 @@ function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function createModel(modelName: string, options?: ModelOptions) {
-  return getClient().getGenerativeModel({
-    model: modelName,
-    systemInstruction: options?.systemInstruction,
-    generationConfig: {
-      temperature: options?.temperature ?? 0.9,
-      maxOutputTokens: options?.maxOutputTokens ?? DEFAULT_MAX_OUTPUT_TOKENS,
-      responseMimeType: options?.responseMimeType,
-    },
-  });
-}
-
-export async function generateGeminiContent(
+export async function generateGroqContent(
   prompt: string,
   options?: ModelOptions,
 ) {
   let lastError: unknown;
+  const modelName = getPreferredGroqModel();
+  const groq = getClient();
 
-  for (const modelName of getPreferredGeminiModels()) {
-    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-      try {
-        const result = await createModel(modelName, options).generateContent(prompt);
-        return result;
-      } catch (error) {
-        lastError = error;
-
-        if (isUnsupportedModelError(error)) {
-          console.error(
-            `[PitchPK] Model "${modelName}" not found, trying next model...`,
-          );
-          break;
-        }
-
-        if (isRateLimitError(error) && attempt < MAX_RETRIES) {
-          const delay = extractRetryDelay(error);
-          console.warn(
-            `[PitchPK] Rate limited on "${modelName}" (attempt ${attempt + 1}/${MAX_RETRIES + 1}). Retrying in ${Math.round(delay / 1000)}s...`,
-          );
-          await sleep(delay);
-          continue;
-        }
-
-        console.error(
-          `[PitchPK] Gemini error on "${modelName}" (attempt ${attempt + 1}):`,
-          error instanceof Error ? error.message : error,
-        );
-        throw error;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const messages: any[] = [];
+      if (options?.systemInstruction) {
+        messages.push({ role: "system", content: options.systemInstruction });
       }
+      messages.push({ role: "user", content: prompt });
+
+      const completion = await groq.chat.completions.create({
+        messages,
+        model: modelName,
+        temperature: options?.temperature ?? 0.9,
+        max_completion_tokens: options?.maxOutputTokens ?? 1024,
+        response_format: options?.responseFormat,
+      });
+
+      return {
+        text: () => completion.choices[0]?.message?.content || "",
+      };
+    } catch (error) {
+      lastError = error;
+
+      if (isRateLimitError(error) && attempt < MAX_RETRIES) {
+        const delay = extractRetryDelay(error);
+        console.warn(
+          `[PitchPK] Rate limited on "${modelName}" (attempt ${attempt + 1}/${MAX_RETRIES + 1}). Retrying in ${Math.round(delay / 1000)}s...`,
+        );
+        await sleep(delay);
+        continue;
+      }
+
+      console.error(
+        `[PitchPK] Groq error on "${modelName}" (attempt ${attempt + 1}):`,
+        error instanceof Error ? error.message : error,
+      );
+      throw error;
     }
   }
 
   throw lastError;
+}
+
+export async function streamGroqContent(
+  prompt: string,
+  options?: ModelOptions,
+) {
+  const modelName = getPreferredGroqModel();
+  const groq = getClient();
+
+  const messages: any[] = [];
+  if (options?.systemInstruction) {
+    messages.push({ role: "system", content: options.systemInstruction });
+  }
+  messages.push({ role: "user", content: prompt });
+
+  const stream = await groq.chat.completions.create({
+    messages,
+    model: modelName,
+    temperature: options?.temperature ?? 0.9,
+    max_completion_tokens: options?.maxOutputTokens ?? 1024,
+    stream: true,
+  });
+
+  const readableStream = new ReadableStream({
+    async start(controller) {
+      for await (const chunk of stream) {
+        const text = chunk.choices[0]?.delta?.content || "";
+        controller.enqueue(new TextEncoder().encode(text));
+      }
+      controller.close();
+    },
+  });
+
+  return new Response(readableStream, {
+    headers: {
+      "Content-Type": "text/event-stream; charset=utf-8",
+      "Cache-Control": "no-cache, no-transform",
+      Connection: "keep-alive",
+    },
+  });
 }
 
 export function formatConversationHistory(messages: SerializableMessage[]) {

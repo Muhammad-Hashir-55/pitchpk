@@ -1,10 +1,10 @@
 import {
   buildMentorPrompt,
-  generateGeminiContent,
-} from "@/lib/gemini";
+  streamGroqContent,
+} from "@/lib/groq";
 import {
   buildMentorFallback,
-  shouldUseGeminiFallback,
+  shouldUseLLMFallback,
   streamTextResponse,
 } from "@/lib/fallbackResponses";
 import { getPersonaById } from "@/lib/personas";
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
       return Response.json({ error: "Unknown persona." }, { status: 404 });
     }
 
-    const result = await generateGeminiContent(
+    const result = await streamGroqContent(
       buildMentorPrompt(
         body.startupIdea,
         body.fullRoastConversation ?? [],
@@ -53,10 +53,10 @@ export async function POST(request: Request) {
         maxOutputTokens: 1200,
       },
     );
-    return streamTextResponse(result.response.text().trim());
+    return result;
   } catch (error) {
     console.error("[PitchPK] Mentor API error:", error instanceof Error ? error.message : error);
-    if (shouldUseGeminiFallback(error)) {
+    if (shouldUseLLMFallback(error)) {
       return streamTextResponse(
         buildMentorFallback(
           body?.personaId ?? "skeptic",

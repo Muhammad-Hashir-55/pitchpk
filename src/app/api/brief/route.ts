@@ -1,7 +1,7 @@
-import { buildBriefPrompt, generateGeminiContent } from "@/lib/gemini";
+import { buildBriefPrompt, generateGroqContent } from "@/lib/groq";
 import {
   buildBriefFallback,
-  shouldUseGeminiFallback,
+  shouldUseLLMFallback,
 } from "@/lib/fallbackResponses";
 import type { SerializableMessage } from "@/types";
 
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = await generateGeminiContent(
+    const result = await generateGroqContent(
       buildBriefPrompt(body.startupIdea, body.fullConversation ?? []),
       {
         systemInstruction: briefSystemPrompt,
@@ -40,12 +40,12 @@ export async function POST(request: Request) {
         maxOutputTokens: 1200,
       },
     );
-    const brief = result.response.text().trim();
+    const brief = result.text().trim();
 
     return Response.json({ brief });
   } catch (error) {
     console.error("[PitchPK] Brief API error:", error instanceof Error ? error.message : error);
-    if (shouldUseGeminiFallback(error)) {
+    if (shouldUseLLMFallback(error)) {
       return Response.json({
         brief: buildBriefFallback(
           body?.startupIdea ?? "",

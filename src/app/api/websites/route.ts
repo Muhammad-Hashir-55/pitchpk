@@ -1,5 +1,5 @@
-import { generateGeminiContent } from "@/lib/gemini";
-import { shouldUseGeminiFallback } from "@/lib/fallbackResponses";
+import { generateGroqContent } from "@/lib/groq";
+import { shouldUseLLMFallback } from "@/lib/fallbackResponses";
 import { extractJsonFromResponse } from "@/lib/jsonExtract";
 import type { NextRequest } from "next/server";
 
@@ -81,12 +81,12 @@ Format as JSON (only JSON, no markdown):
   "resources": ["Resource/Guide 1", "Resource/Guide 2", "Resource/Guide 3"]
 }`;
 
-    const result = await generateGeminiContent(prompt, {
+    const result = await generateGroqContent(prompt, {
       temperature: 0.7,
       maxOutputTokens: 2000,
-      responseMimeType: "application/json",
+      responseFormat: { type: "json_object" },
     });
-    const text = result.response.text();
+    const text = result.text();
     
     const rawData = JSON.parse(extractJsonFromResponse(text)) as Partial<WebsiteResult>;
 
@@ -107,7 +107,7 @@ Format as JSON (only JSON, no markdown):
   } catch (error) {
     console.error("[PitchPK] Websites API error:", error instanceof Error ? error.message : error);
 
-    if (shouldUseGeminiFallback(error)) {
+    if (shouldUseLLMFallback(error)) {
       return Response.json(FALLBACK_WEBSITES);
     }
 

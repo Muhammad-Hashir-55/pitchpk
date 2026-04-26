@@ -35,38 +35,56 @@ export function IdeaSuggestions({ idea, isLoading }: IdeaSuggestionsProps) {
   const [intelligence, setIntelligence] = useState<IntelligenceResult | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const [hasRequested, setHasRequested] = useState(false);
+
   useEffect(() => {
+    // Reset state if idea becomes too short or empty
     if (!idea || idea.trim().length < 30 || isLoading) {
       setIntelligence(null);
+      setHasRequested(false);
       return;
     }
-
-    const fetchSuggestions = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch("/api/intelligence", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ startupIdea: idea }),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          // Verify we got the structure back. Fallbacks are handled by the single API.
-          if (data.search || data.investors || data.websites) {
-             setIntelligence(data);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching intelligence:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const debounceTimer = window.setTimeout(fetchSuggestions, 800);
-    return () => window.clearTimeout(debounceTimer);
   }, [idea, isLoading]);
+
+  const fetchSuggestions = async () => {
+    if (!idea || idea.trim().length < 30 || isLoading) return;
+    
+    setLoading(true);
+    setHasRequested(true);
+    try {
+      const response = await fetch("/api/intelligence", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ startupIdea: idea }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Verify we got the structure back. Fallbacks are handled by the single API.
+        if (data.search || data.investors || data.websites) {
+           setIntelligence(data);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching intelligence:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!hasRequested && idea && idea.trim().length >= 30 && !isLoading) {
+    return (
+      <div className="flex justify-center mt-6">
+        <button
+          onClick={fetchSuggestions}
+          type="button"
+          className="rounded-full border border-[#2f6e78]/20 bg-[#f2f8fa] px-8 py-4 font-semibold text-[#2f6e78] transition hover:bg-[#2f6e78] hover:text-white shadow-sm hover:shadow-md"
+        >
+          Generate Realtime Context
+        </button>
+      </div>
+    );
+  }
 
   if (!intelligence && !loading) {
     return null;
